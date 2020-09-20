@@ -1,26 +1,103 @@
 import React from 'react';
-import logo from './logo.svg';
+import Alert from 'react-bootstrap/Alert'
 import './App.css';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  const [showEmailRequired, setShowEmailRequired] = React.useState(false)
+  const [showPasswordRequired, setShowPasswordRequired] = React.useState(false)
+  const [showEmailAlert, setShowEmailAlert] = React.useState(false);
+  const [showLoginAlert, setShowLoginAlert] = React.useState(false);
+
+  const submitHandler = () => {
+    validate()
+    let emailRegEx = /^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (!emailRegEx.test(document.getElementById('email-input').value.toLowerCase()) &&
+        document.getElementById('email-input').value !== '') {
+      setShowEmailAlert(true)
+    }
+    else setShowEmailAlert(false)
+    disableInput()
+    if (document.getElementById('email-input').value === '' ||
+        document.getElementById('password-input').value === '' ||
+      showEmailAlert){
+      console.log(showEmailAlert)
+    }
+    else {setTimeout(function () {
+      setShowLoginAlert(true)
+    }, 900)}
+  };
+  const disableInput = () => {
+    document.getElementById("email-input").disabled = true;
+    document.getElementById("password-input").disabled = true;
+    document.getElementById("submit-button").disabled = true;
+    setTimeout(function(){
+      let email = document.getElementById("email-input") ;
+      email.disabled = false;
+      let password = document.getElementById("password-input") ;
+      password.disabled = false;
+      let submit = document.getElementById("submit-button") ;
+      submit.disabled = false;
+    }, 900);
+  }
+  const validate = () => {
+    if (document.getElementById('email-input').value === '') {
+      setShowEmailRequired(true)
+    } else setShowEmailRequired(false)
+    if (document.getElementById('password-input').value === '') {
+      setShowPasswordRequired(true)
+    } else setShowPasswordRequired(false)
+  }
+  return <div className="form">
+    <form>
+      <h1>Account Login</h1>
+      {
+        showEmailAlert ?
+            <Alert className="alert">
+              <Alert.Heading className="alert-header">Please enter a valid email address.</Alert.Heading>
+              <a className="close" data-dismiss="alert" aria-label="close" onClick={() => setShowEmailAlert(false)}>&times;</a>
+            </Alert> :
+            <div></div>
+      }
+      {
+        showLoginAlert ?
+            <Alert className="alert">
+              <Alert.Heading className="alert-header">Invalid email address or password.</Alert.Heading>
+              <a className="close" data-dismiss="alert" aria-label="close" onClick={() => setShowLoginAlert(false)}>&times;</a>
+            </Alert> :
+            <div></div>
+      }
+
+      <ul className="form-container">
+        <li>
+          <div>
+            <label>Email Address</label>
+            {
+              showEmailRequired ?
+              <label className="required-label">Required</label> :
+              <div></div>
+            }
+          </div>
+          <input type="email" name="email" placeholder="john.doe@example.com" id="email-input">
+          </input>
+        </li>
+        <li>
+          <div>
+            <label htmlFor="password">Password</label>
+            {
+              showPasswordRequired ?
+                  <label className="required-label">Required</label> :
+                  <div></div>
+            }
+          </div>
+          <input type="password" name="password" placeholder="• • • • • • • • • •" id="password-input">
+          </input>
+        </li>
+        <div>
+          <button type="button" id="submit-button" onClick={submitHandler}>LOG IN</button>
+        </div>
+      </ul>
+    </form>
+  </div>
 }
 
 export default App;

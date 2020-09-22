@@ -7,7 +7,7 @@ function App() {
   const [showPasswordRequired, setShowPasswordRequired] = React.useState(false)
   const [showEmailAlert, setShowEmailAlert] = React.useState(false);
   const [showLoginAlert, setShowLoginAlert] = React.useState(false);
-
+  const [disableInput, setDisableInput] = React.useState(false);
   const submitHandler = () => {
     validate()
     let emailRegEx = /^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -16,7 +16,7 @@ function App() {
       setShowEmailAlert(true)
     }
     else setShowEmailAlert(false)
-    disableInput()
+    disableInputFunc()
     if (document.getElementById('email-input').value === '' ||
         document.getElementById('password-input').value === '' ||
       showEmailAlert){
@@ -26,17 +26,10 @@ function App() {
       setShowLoginAlert(true)
     }, 900)}
   };
-  const disableInput = () => {
-    document.getElementById("email-input").disabled = true;
-    document.getElementById("password-input").disabled = true;
-    document.getElementById("submit-button").disabled = true;
+  const disableInputFunc = () => {
+    setDisableInput(true)
     setTimeout(function(){
-      let email = document.getElementById("email-input") ;
-      email.disabled = false;
-      let password = document.getElementById("password-input") ;
-      password.disabled = false;
-      let submit = document.getElementById("submit-button") ;
-      submit.disabled = false;
+      setDisableInput(false)
     }, 900);
   }
   const validate = () => {
@@ -77,7 +70,7 @@ function App() {
               <div></div>
             }
           </div>
-          <input type="email" name="email" placeholder="john.doe@example.com" id="email-input">
+          <input disabled={disableInput} type="email" name="email" placeholder="john.doe@example.com" id="email-input">
           </input>
         </li>
         <li>
@@ -89,11 +82,11 @@ function App() {
                   <div></div>
             }
           </div>
-          <input type="password" name="password" placeholder="• • • • • • • • • •" id="password-input">
+          <input disabled={disableInput} type="password" name="password" placeholder="• • • • • • • • • •" id="password-input">
           </input>
         </li>
         <div>
-          <button type="button" id="submit-button" onClick={submitHandler}>LOG IN</button>
+          <button disabled={disableInput} type="button" id="submit-button" onClick={submitHandler}>LOG IN</button>
         </div>
       </ul>
     </form>
